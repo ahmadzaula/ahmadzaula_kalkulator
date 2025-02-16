@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Sederhana</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .calculator {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            width: 380px;
+        }
+
+        #display {
+            width: 100%;
+            height: 40px;
+            font-size: 24px;
+            text-align: right;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 20px;
+            background-color: #70e4f3;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #086a77;
+        }
+
+        button:active {
+            background-color: #0a5761;
+        }
+
+        button.clear {
+            background-color: #ff6666;
+            color: white;
+        }
+
+        button.clear:hover {
+            background-color: #ff4d4d;
+        }
+
+        button.samadengan {
+            background-color: palegreen;
+            color: black;
+        }
+
+        button.samadengan:hover {
+            background-color: rgb(86, 212, 118);
+        }
+
+        button.delete {
+            background-color: #f9c974;
+            color: white;
+        }
+
+        button.delete:hover {
+            background-color: #f7b441;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" disabled>
+        <div class="buttons">
+            <button class="btn" onclick="appendToDisplay('7')">7</button>
+            <button class="btn" onclick="appendToDisplay('8')">8</button>
+            <button class="btn" onclick="appendToDisplay('9')">9</button>
+            <button class="btn" onclick="appendToDisplay('+')">+</button>
+            
+            <button class="btn" onclick="appendToDisplay('4')">4</button>
+            <button class="btn" onclick="appendToDisplay('5')">5</button>
+            <button class="btn" onclick="appendToDisplay('6')">6</button>
+            <button class="btn" onclick="appendToDisplay('-')">-</button>
+
+            <button class="btn" onclick="appendToDisplay('1')">1</button>
+            <button class="btn" onclick="appendToDisplay('2')">2</button>
+            <button class="btn" onclick="appendToDisplay('3')">3</button>
+
+            <button class="btn" onclick="appendToDisplay('*')">*</button>
+            <button class="btn" onclick="appendToDisplay('0')">0</button>
+            <button class="btn" onclick="appendToDisplay('.')">.</button>
+            <button class="btn samadengan" onclick="calculateResult()">=</button>
+            <button class="btn" onclick="appendToDisplay('/')">/</button>
+            <button class="btn clear" onclick="clearDisplay()">AC</button>
+            <button class="btn delete" onclick="deleteLastCharacter()">DEL</button> <!-- Tombol delete -->
+        </div>
+    </div>
+
+<script>
+let isResult = false;  
+
+function appendToDisplay(value) {
+    const display = document.getElementById('display');
+    if (isResult) {
+
+        display.value = value;
+        isResult = false;
+    } else {
+        display.value += value;
+    }
+}
+
+function clearDisplay() {
+    document.getElementById('display').value = '';
+    isResult = false;  // Reset the result flag when cleared
+}
+
+function deleteLastCharacter() {
+    const display = document.getElementById('display');
+    display.value = display.value.slice(0, -1); // Hapus satu karakter terakhir
+}
+
+function calculateResult() {
+    let expression = document.getElementById('display').value;
+
+    
+    if (expression.trim() === '') {
+        return;  // Tidak melakukan apa-apa jika ekspresi kosong
+    }
+
+    // Prevent invalid operations such as ending with an operator
+    if (/[+\-*/]$/.test(expression)) {
+        return;
+    }
+
+    if (expression.includes('/0')) {
+        document.getElementById('display').value = 'Tidak dapat dibagi dengan 0';
+        isResult = false;
+        return;
+    }
+
+
+
+    try {
+        // Evaluate the expression
+        let result = eval(expression);
+        
+        // Format the result with thousand separator
+        result = formatNumber(result);
+        
+        // Display the result
+        document.getElementById('display').value = result;
+        isResult = true;  // Mark that the result has been calculated
+    } catch (error) {
+        isResult = false;  // In case of error, we reset the flag
+    }
+}
+
+function formatNumber(num) {
+    // Check if num is a number, then format it
+    if (isNaN(num)) {
+        return 'Error';  // In case of non-numeric value
+    }
+    
+    // Format the number with a thousand separator
+    return num.toLocaleString('id-ID');  // Ensure thousands separator is in correct format
+}
+</script>
+
+</body>
+</html>
